@@ -9,7 +9,8 @@ namespace Monogame___Summative
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-
+        Texture2D bankBackroundTexture, blurredBankBackroundTexture, backBtnTexture;
+        Rectangle window, backBtnRect;
 
         enum Screen
         {
@@ -19,7 +20,7 @@ namespace Monogame___Summative
             MainScreen,
             EndScreen
         }
-
+        Screen screen;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -29,7 +30,15 @@ namespace Monogame___Summative
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            screen = Screen.Intro;
+            window = new Rectangle(0, 0, 800, 600);
+            _graphics.PreferredBackBufferWidth = window.Width;
+            _graphics.PreferredBackBufferHeight = window.Height;
+            _graphics.ApplyChanges();
+
+            // Buttons
+            backBtnRect = new Rectangle(700, 25, 75, 73);
+
 
             base.Initialize();
         }
@@ -38,7 +47,9 @@ namespace Monogame___Summative
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            bankBackroundTexture = Content.Load<Texture2D>("bankBackround");
+            blurredBankBackroundTexture = Content.Load<Texture2D>("blurredBankBackround");
+            backBtnTexture = Content.Load<Texture2D>("backBtn");
         }
 
         protected override void Update(GameTime gameTime)
@@ -54,8 +65,15 @@ namespace Monogame___Summative
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
+            if (screen == Screen.Intro)
+            {
+                _spriteBatch.Draw(bankBackroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+            }
 
-            
+
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
