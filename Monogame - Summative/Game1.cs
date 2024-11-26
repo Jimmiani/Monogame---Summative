@@ -9,8 +9,9 @@ namespace Monogame___Summative
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        Texture2D bankBackroundTexture, blurredBankBackroundTexture, backBtnTexture;
-        Rectangle window, backBtnRect;
+        MouseState mouseState, prevMouseState;
+        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, playBtnTexture, settingsBtnTexture;
+        Rectangle window, playBtnRect, settingsBtnRect;
 
         enum Screen
         {
@@ -37,8 +38,8 @@ namespace Monogame___Summative
             _graphics.ApplyChanges();
 
             // Buttons
-            backBtnRect = new Rectangle(700, 25, 75, 73);
-
+            playBtnRect = new Rectangle((window.Width - 300) / 2, (window.Height - 178) / 2, 300, 178);
+            settingsBtnRect = new Rectangle(650, 30, 120, 120);
 
             base.Initialize();
         }
@@ -47,17 +48,19 @@ namespace Monogame___Summative
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            bankBackroundTexture = Content.Load<Texture2D>("bankBackround");
-            blurredBankBackroundTexture = Content.Load<Texture2D>("blurredBankBackround");
-            backBtnTexture = Content.Load<Texture2D>("backBtn");
+            bankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/bankBackground");
+            blurredBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blurredBankBackground");
+            playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
+            settingsBtnTexture = Content.Load<Texture2D>("Buttons/settingsBtn");
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
+            prevMouseState = mouseState;
+            mouseState = Mouse.GetState();
+            this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
             base.Update(gameTime);
         }
@@ -68,8 +71,9 @@ namespace Monogame___Summative
             _spriteBatch.Begin();
             if (screen == Screen.Intro)
             {
-                _spriteBatch.Draw(bankBackroundTexture, new Vector2(0, 0), Color.White);
-                _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+                _spriteBatch.Draw(blurredBankBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(playBtnTexture, playBtnRect, Color.White);
+                _spriteBatch.Draw(settingsBtnTexture, settingsBtnRect, Color.White);
             }
 
 

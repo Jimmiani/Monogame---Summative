@@ -11,6 +11,13 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\Backrounds\**" />
+    <EmbeddedResource Remove="Content\Backrounds\**" />
+    <None Remove="Content\Backrounds\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Content\bankBackround.png" />
+    <None Remove="Content\blurredBankBackround.png" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
@@ -23,9 +30,8 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Content\Backrounds\bankBackround.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
+    <Folder Include="Content\Backgrounds\" />
+    <Folder Include="Content\Buttons\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
