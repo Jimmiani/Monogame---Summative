@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Monogame___Summative
 {
@@ -10,13 +11,21 @@ namespace Monogame___Summative
         private SpriteBatch _spriteBatch;
 
         MouseState mouseState, prevMouseState;
+        Color musicColour;
+
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture;
+        Rectangle window, menuRect;
+
         // Buttons
-        Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture;
-        Rectangle window, playBtnRect, settingsBtnRect, menuRect, noBtnRect, musicBtnRect, instructionsBtnRect;
+        Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture, backBtnTexture;
+        Rectangle playBtnRect, settingsBtnRect, noBtnRect, musicBtnRect, instructionsBtnRect, backBtnRect;
+
+        // Fonts
         SpriteFont titleFont;
 
+        // Songs
+        Song hitmanSong;
 
         enum Screen
         {
@@ -42,11 +51,17 @@ namespace Monogame___Summative
             _graphics.PreferredBackBufferHeight = window.Height;
             _graphics.ApplyChanges();
 
+            hitmanSong = Content.Load<Song>("Audio/hitman");
+            MediaPlayer.Play(hitmanSong);
+            musicColour = Color.White;
+
             // Buttons
             playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
             settingsBtnRect = new Rectangle(690, 30, 80, 80);
-            musicBtnRect = new Rectangle(200, 260, 80, 80);
+            musicBtnRect = new Rectangle(240, 240, 110, 110);
             noBtnRect = new Rectangle(590, 100, 80, 80);
+            instructionsBtnRect = new Rectangle(450, 240, 110, 110);
+            backBtnRect = new Rectangle(120, 100, 80, 80);
 
             // Images
             menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
@@ -69,6 +84,7 @@ namespace Monogame___Summative
             noBtnTexture = Content.Load<Texture2D>("Buttons/noBtn");
             musicBtnTexture = Content.Load<Texture2D>("Buttons/musicBtn");
             instructionsBtnTexture = Content.Load<Texture2D>("Buttons/instructionsBtn");
+            backBtnTexture = Content.Load<Texture2D>("Buttons/backBtn");
             
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
@@ -160,8 +176,17 @@ namespace Monogame___Summative
                         musicBtnRect = new Rectangle(246, 246, 98, 98);
                         if (mouseState.LeftButton == ButtonState.Released)
                         {
-                            
                             musicBtnRect = new Rectangle(240, 240, 110, 110);
+                            if (MediaPlayer.State == MediaState.Playing)
+                            {
+                                musicColour = Color.DarkGray;
+                                MediaPlayer.Pause();
+                            }
+                            else if (MediaPlayer.State == MediaState.Paused)
+                            {
+                                musicColour = Color.White;
+                                MediaPlayer.Resume();
+                            }
                         }
                     }
                 }
@@ -170,6 +195,75 @@ namespace Monogame___Summative
                     if (prevMouseState.LeftButton == ButtonState.Released)
                     {
                         musicBtnRect = new Rectangle(240, 240, 110, 110);
+                    }
+                }
+
+                // Instructions Button
+                if (instructionsBtnRect.Contains(mouseState.Position))
+                {
+                    instructionsBtnRect = new Rectangle(446, 234, 122, 122);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        instructionsBtnRect = new Rectangle(456, 246, 98, 98);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.InstructionsScreen;
+                            instructionsBtnRect = new Rectangle(450, 240, 110, 110);
+                        }
+                    }
+                }
+                else if (!instructionsBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        instructionsBtnRect = new Rectangle(450, 240, 110, 110);
+                    }
+                }
+            }
+
+            else if (screen == Screen.InstructionsScreen)
+            {
+                // No Button
+                if (noBtnRect.Contains(mouseState.Position))
+                {
+                    noBtnRect = new Rectangle(584, 94, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        noBtnRect = new Rectangle(596, 106, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Intro;
+                            noBtnRect = new Rectangle(590, 100, 80, 80);
+                        }
+                    }
+                }
+                else if (!noBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        noBtnRect = new Rectangle(590, 100, 80, 80);
+                    }
+                }
+
+                // Back Button
+                if (backBtnRect.Contains(mouseState.Position))
+                {
+                    backBtnRect = new Rectangle(114, 94, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        backBtnRect = new Rectangle(126, 106, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.MenuScreen;
+                            backBtnRect = new Rectangle(120, 100, 80, 80);
+                        }
+                    }
+                }
+                else if (!backBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        backBtnRect = new Rectangle(120, 100, 80, 80);
                     }
                 }
             }
@@ -194,7 +288,16 @@ namespace Monogame___Summative
                 _spriteBatch.Draw(menuBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(menuTexture, menuRect, Color.White);
                 _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
-                _spriteBatch.Draw(musicBtnTexture, musicBtnRect, Color.White);
+                _spriteBatch.Draw(musicBtnTexture, musicBtnRect, musicColour);
+                _spriteBatch.Draw(instructionsBtnTexture, instructionsBtnRect, Color.White);
+            }
+            else if (screen == Screen.InstructionsScreen)
+            {
+                _spriteBatch.Draw(menuBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(menuTexture, menuRect, Color.White);
+                _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
+                _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
+                //_spriteBatch.DrawString(instructionsFont, "How to Play", new Vector2(250, 150), Color.Black, 0, new Vector2(0, 0), 3, SpriteEffects.None, 0);
             }
 
             _spriteBatch.End();
