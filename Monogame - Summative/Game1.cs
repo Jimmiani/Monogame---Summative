@@ -10,8 +10,11 @@ namespace Monogame___Summative
         private SpriteBatch _spriteBatch;
 
         MouseState mouseState, prevMouseState;
-        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, playBtnTexture, settingsBtnTexture, menuTexture, menuBackroundTexture;
-        Rectangle window, playBtnRect, settingsBtnRect, menuRect;
+        // Images
+        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture;
+        // Buttons
+        Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture;
+        Rectangle window, playBtnRect, settingsBtnRect, menuRect, noBtnRect, musicBtnRect, instructionsBtnRect;
         SpriteFont titleFont;
 
 
@@ -42,6 +45,8 @@ namespace Monogame___Summative
             // Buttons
             playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
             settingsBtnRect = new Rectangle(690, 30, 80, 80);
+            musicBtnRect = new Rectangle(200, 260, 80, 80);
+            noBtnRect = new Rectangle(590, 100, 80, 80);
 
             // Images
             menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
@@ -53,13 +58,24 @@ namespace Monogame___Summative
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Backgrounds
             bankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/bankBackground");
             blurredBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blurredBankBackground");
+            menuBackgroundTexture = Content.Load<Texture2D>("Backgrounds/menuBackground");
+            
+            // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
             settingsBtnTexture = Content.Load<Texture2D>("Buttons/settingsBtn");
+            noBtnTexture = Content.Load<Texture2D>("Buttons/noBtn");
+            musicBtnTexture = Content.Load<Texture2D>("Buttons/musicBtn");
+            instructionsBtnTexture = Content.Load<Texture2D>("Buttons/instructionsBtn");
+            
+            // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
+
+            // Images
             menuTexture = Content.Load<Texture2D>("Images/menuScreen");
-            menuBackroundTexture = Content.Load<Texture2D>("Backgrounds/menuBackground");
+            
         }
 
         protected override void Update(GameTime gameTime)
@@ -69,42 +85,93 @@ namespace Monogame___Summative
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
+            if (screen == Screen.Intro)
+            {
+                // Play Button
+                if (playBtnRect.Contains(mouseState.Position))
+                {
+                    playBtnRect = new Rectangle((window.Width - 320) / 2, 345, 320, 190);
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        playBtnRect = new Rectangle((window.Width - 280) / 2, 355, 280, 166);
+                    }
+                }
+                else if (!playBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
+                    }
+                }
 
-            // Play Button
-            if (playBtnRect.Contains(mouseState.Position))
-            {
-                playBtnRect = new Rectangle((window.Width - 320) / 2, 345, 320, 190);
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                // Settings Button
+                if (settingsBtnRect.Contains(mouseState.Position))
                 {
-                    playBtnRect = new Rectangle((window.Width - 280) / 2, 355, 280, 166);
+                    settingsBtnRect = new Rectangle(684, 24, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        settingsBtnRect = new Rectangle(696, 36, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.MenuScreen;
+                            settingsBtnRect = new Rectangle(690, 30, 80, 80);
+                        }
+                    }
+                }
+                else if (!settingsBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        settingsBtnRect = new Rectangle(690, 30, 80, 80);
+                    }
                 }
             }
-            else if (!playBtnRect.Contains(mouseState.Position))
+            
+            else if (screen == Screen.MenuScreen)
             {
-                if (prevMouseState.LeftButton == ButtonState.Released)
+                // No Button
+                if (noBtnRect.Contains(mouseState.Position))
                 {
-                    playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
+                    noBtnRect = new Rectangle(584, 94, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        noBtnRect = new Rectangle(596, 106, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Intro;
+                            noBtnRect = new Rectangle(590, 100, 80, 80);
+                        }
+                    }
                 }
-                    
-            }
+                else if (!noBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        noBtnRect = new Rectangle(590, 100, 80, 80);
+                    }
+                }
 
-            // Settings Button
-            if (settingsBtnRect.Contains(mouseState.Position))
-            {
-                settingsBtnRect = new Rectangle(684, 24, 92, 92);
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                // Music Button
+                if (musicBtnRect.Contains(mouseState.Position))
                 {
-                    settingsBtnRect = new Rectangle(696, 36, 68, 68);
-                    screen = Screen.MenuScreen;
+                    musicBtnRect = new Rectangle(234, 236, 122, 122);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        musicBtnRect = new Rectangle(246, 246, 98, 98);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            
+                            musicBtnRect = new Rectangle(240, 240, 110, 110);
+                        }
+                    }
                 }
-            }
-            else if (!settingsBtnRect.Contains(mouseState.Position))
-            {
-                if (prevMouseState.LeftButton == ButtonState.Released)
+                else if (!musicBtnRect.Contains(mouseState.Position))
                 {
-                    settingsBtnRect = new Rectangle(690, 30, 80, 80);
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        musicBtnRect = new Rectangle(240, 240, 110, 110);
+                    }
                 }
-                
             }
 
             base.Update(gameTime);
@@ -124,8 +191,10 @@ namespace Monogame___Summative
             }
             else if (screen == Screen.MenuScreen)
             {
-                _spriteBatch.Draw(menuBackroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(menuBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(menuTexture, menuRect, Color.White);
+                _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
+                _spriteBatch.Draw(musicBtnTexture, musicBtnRect, Color.White);
             }
 
             _spriteBatch.End();
