@@ -175,6 +175,11 @@
 /processorParam:TextureFormat=Color
 /build:Buttons/yesBtn.png
 
+#begin Fonts/howToPlayFont.spritefont
+/importer:
+/processor:
+/build:Fonts/howToPlayFont.spritefont
+
 #begin Fonts/textFont.ttf
 /copy:Fonts/textFont.ttf
 

@@ -22,7 +22,8 @@ namespace Monogame___Summative
         Rectangle playBtnRect, settingsBtnRect, noBtnRect, musicBtnRect, instructionsBtnRect, backBtnRect;
 
         // Fonts
-        SpriteFont titleFont;
+        SpriteFont titleFont, howToPlayFont;
+        string instructions;
 
         // Songs
         Song hitmanSong;
@@ -54,6 +55,16 @@ namespace Monogame___Summative
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
             musicColour = Color.White;
+
+
+            instructions = "Welcome to Vault Raiders! You and your crew are expert\n" +
+                           "thieves, and tonight is your big heist. Your goal is\n" +
+                           "simple: infiltrate the bank, crack open the vault, and get\n" +
+                           "away with the cash before the cops show up and ruin your\n" +
+                           "plans. But there's a catch. The clock is ticking, and if\n" +
+                           "you're caught, you’ll be heading to jail faster than you\n" +
+                           "can say getaway car.";
+
 
             // Buttons
             playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
@@ -88,6 +99,7 @@ namespace Monogame___Summative
             
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
+            howToPlayFont = Content.Load<SpriteFont>("Fonts/howToPlayFont");
 
             // Images
             menuTexture = Content.Load<Texture2D>("Images/menuScreen");
@@ -297,7 +309,8 @@ namespace Monogame___Summative
                 _spriteBatch.Draw(menuTexture, menuRect, Color.White);
                 _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
                 _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
-                //_spriteBatch.DrawString(instructionsFont, "How to Play", new Vector2(250, 150), Color.Black, 0, new Vector2(0, 0), 3, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "How to Play", new Vector2(277, 160), Color.Black, 0, new Vector2(0, 0), (float)0.4, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(howToPlayFont, instructions, new Vector2(140, 190), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
             }
 
             _spriteBatch.End();
