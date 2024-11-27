@@ -10,13 +10,15 @@ namespace Monogame___Summative
         private SpriteBatch _spriteBatch;
 
         MouseState mouseState, prevMouseState;
-        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, playBtnTexture, settingsBtnTexture;
-        Rectangle window, playBtnRect, settingsBtnRect;
+        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, playBtnTexture, settingsBtnTexture, menuTexture, menuBackroundTexture;
+        Rectangle window, playBtnRect, settingsBtnRect, menuRect;
+        SpriteFont titleFont;
+
 
         enum Screen
         {
             Intro,
-            OptionScreen,
+            MenuScreen,
             InstructionsScreen,
             MainScreen,
             EndScreen
@@ -38,8 +40,11 @@ namespace Monogame___Summative
             _graphics.ApplyChanges();
 
             // Buttons
-            playBtnRect = new Rectangle((window.Width - 300) / 2, (window.Height - 178) / 2, 300, 178);
-            settingsBtnRect = new Rectangle(650, 30, 120, 120);
+            playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
+            settingsBtnRect = new Rectangle(690, 30, 80, 80);
+
+            // Images
+            menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
 
             base.Initialize();
         }
@@ -52,6 +57,9 @@ namespace Monogame___Summative
             blurredBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blurredBankBackground");
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
             settingsBtnTexture = Content.Load<Texture2D>("Buttons/settingsBtn");
+            titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
+            menuTexture = Content.Load<Texture2D>("Images/menuScreen");
+            menuBackroundTexture = Content.Load<Texture2D>("Backgrounds/menuBackground");
         }
 
         protected override void Update(GameTime gameTime)
@@ -61,6 +69,43 @@ namespace Monogame___Summative
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
+
+            // Play Button
+            if (playBtnRect.Contains(mouseState.Position))
+            {
+                playBtnRect = new Rectangle((window.Width - 320) / 2, 345, 320, 190);
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    playBtnRect = new Rectangle((window.Width - 280) / 2, 355, 280, 166);
+                }
+            }
+            else if (!playBtnRect.Contains(mouseState.Position))
+            {
+                if (prevMouseState.LeftButton == ButtonState.Released)
+                {
+                    playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
+                }
+                    
+            }
+
+            // Settings Button
+            if (settingsBtnRect.Contains(mouseState.Position))
+            {
+                settingsBtnRect = new Rectangle(684, 24, 92, 92);
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    settingsBtnRect = new Rectangle(696, 36, 68, 68);
+                    screen = Screen.MenuScreen;
+                }
+            }
+            else if (!settingsBtnRect.Contains(mouseState.Position))
+            {
+                if (prevMouseState.LeftButton == ButtonState.Released)
+                {
+                    settingsBtnRect = new Rectangle(690, 30, 80, 80);
+                }
+                
+            }
 
             base.Update(gameTime);
         }
@@ -74,8 +119,14 @@ namespace Monogame___Summative
                 _spriteBatch.Draw(blurredBankBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(playBtnTexture, playBtnRect, Color.White);
                 _spriteBatch.Draw(settingsBtnTexture, settingsBtnRect, Color.White);
+                _spriteBatch.DrawString(titleFont, "Vault", new Vector2(30, 90), Color.DarkOrange, MathHelper.ToRadians(-20), new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "Raiders!", new Vector2(105, 180), Color.SteelBlue, 0, new Vector2(0, 0), (float)1.5, SpriteEffects.None, 0);
             }
-
+            else if (screen == Screen.MenuScreen)
+            {
+                _spriteBatch.Draw(menuBackroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(menuTexture, menuRect, Color.White);
+            }
 
             _spriteBatch.End();
             base.Draw(gameTime);
