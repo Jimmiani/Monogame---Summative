@@ -57,13 +57,16 @@ namespace Monogame___Summative
             musicColour = Color.White;
 
 
-            instructions = "Welcome to Vault Raiders! You and your crew are expert\n" +
-                           "thieves, and tonight is your big heist. Your goal is\n" +
-                           "simple: infiltrate the bank, crack open the vault, and get\n" +
-                           "away with the cash before the cops show up and ruin your\n" +
-                           "plans. But there's a catch. The clock is ticking, and if\n" +
-                           "you're caught, you’ll be heading to jail faster than you\n" +
-                           "can say getaway car.";
+            instructions = "Welcome to Vault Raiders! You and your crew\n" +
+                           "are expert thieves, and tonight is your big\n" +
+                           "heist. Your goal is simple: infiltrate the\n" +
+                           "bank, crack open the vault, and get away with\n" +
+                           "the cash before the cops show up and ruin your\n" +
+                           "plans. But there's a catch. The clock is ticking,\n" +
+                           "and if you're caught, you'll be in a prison\n" +
+                           " cell before you evenrealise. Do you have what\n" +
+                           "it takes to pull off the perfectheist, or will\n" +
+                           "you be behind bars before sunrise?";
 
 
             // Buttons
@@ -119,9 +122,14 @@ namespace Monogame___Summative
                 if (playBtnRect.Contains(mouseState.Position))
                 {
                     playBtnRect = new Rectangle((window.Width - 320) / 2, 345, 320, 190);
-                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
                     {
                         playBtnRect = new Rectangle((window.Width - 280) / 2, 355, 280, 166);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.MainScreen;
+                            playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
+                        }
                     }
                 }
                 else if (!playBtnRect.Contains(mouseState.Position))
@@ -310,7 +318,11 @@ namespace Monogame___Summative
                 _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
                 _spriteBatch.Draw(backBtnTexture, backBtnRect, Color.White);
                 _spriteBatch.DrawString(titleFont, "How to Play", new Vector2(277, 160), Color.Black, 0, new Vector2(0, 0), (float)0.4, SpriteEffects.None, 0);
-                _spriteBatch.DrawString(howToPlayFont, instructions, new Vector2(140, 190), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(howToPlayFont, instructions, new Vector2(190, 215), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
+            }
+            else if (screen == Screen.MainScreen)
+            {
+                _spriteBatch.Draw(bankBackgroundTexture, new Vector2(0, 0), Color.White);
             }
 
             _spriteBatch.End();

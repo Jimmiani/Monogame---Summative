@@ -79,6 +79,18 @@
 /processorParam:TextureFormat=Color
 /build:Buttons/forwardBtn.png
 
+#begin Buttons/homeBtn.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buttons/homeBtn.png
+
 #begin Buttons/instructionsBtn.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -176,8 +188,10 @@
 /build:Buttons/yesBtn.png
 
 #begin Fonts/howToPlayFont.spritefont
-/importer:
-/processor:
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
 /build:Fonts/howToPlayFont.spritefont
 
 #begin Fonts/textFont.ttf
