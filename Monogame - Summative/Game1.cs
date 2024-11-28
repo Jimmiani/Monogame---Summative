@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Collections.Generic;
 
 namespace Monogame___Summative
 {
@@ -27,6 +28,13 @@ namespace Monogame___Summative
 
         // Songs
         Song hitmanSong;
+
+        // Spritesheet
+        Texture2D stickmanSpritesheet, cropTexture;
+        List<Texture2D> stickmanTextures;
+        float stickSeconds;
+        Vector2 stickSpeed;
+        Rectangle stickRect;
 
         enum Screen
         {
@@ -80,6 +88,12 @@ namespace Monogame___Summative
             // Images
             menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
 
+            // Spritesheet
+            stickmanTextures = new List<Texture2D>();
+            stickSeconds = 0f;
+            stickSpeed = new Vector2(4, 0);
+            stickRect = new Rectangle(-480, 300, 480, 440);
+
             base.Initialize();
         }
 
@@ -106,7 +120,32 @@ namespace Monogame___Summative
 
             // Images
             menuTexture = Content.Load<Texture2D>("Images/menuScreen");
-            
+
+            // Spritesheet
+
+            stickmanSpritesheet = Content.Load<Texture2D>("Spritesheets/stickmanSpritesheet");
+            Rectangle sourceRect;
+
+
+            int width = stickmanSpritesheet.Width / 8;
+            int height = stickmanSpritesheet.Height / 2;
+
+            for (int y = 0; y < 2; y++)
+            {
+                for (int x = 0; x < 8; x++)
+                {
+                    sourceRect = new Rectangle(x * width, y * height, width, height);
+                    cropTexture = new Texture2D(GraphicsDevice, width, height);
+                    Color[] data = new Color[width * height];
+                    stickmanSpritesheet.GetData(0, sourceRect, data, 0, data.Length);
+                    cropTexture.SetData(data);
+                    if (stickmanTextures.Count < 8)
+                    {
+                        stickmanTextures.Add(cropTexture);
+                    }
+                }
+            }
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -116,6 +155,7 @@ namespace Monogame___Summative
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
+            stickSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (screen == Screen.Intro)
             {
                 // Play Button
@@ -286,6 +326,18 @@ namespace Monogame___Summative
                         backBtnRect = new Rectangle(120, 100, 80, 80);
                     }
                 }
+                else if (screen == Screen.MainScreen)
+                {
+                    // Stick Man
+                    stickRect.X += (int)stickSpeed.X;
+                    stickRect.X += (int)stickSpeed.X;
+                    stickSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if (stickSeconds >= 2f)
+                    {
+                        stickSeconds = 0f;
+                    }
+                }
             }
 
             base.Update(gameTime);
@@ -323,6 +375,7 @@ namespace Monogame___Summative
             else if (screen == Screen.MainScreen)
             {
                 _spriteBatch.Draw(bankBackgroundTexture, new Vector2(0, 0), Color.White);
+                
             }
 
             _spriteBatch.End();
