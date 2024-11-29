@@ -16,6 +16,7 @@
     <None Remove="Content\Backrounds\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Content\Audio\breakInAudio.mp3" />
     <None Remove="Content\bankBackround.png" />
     <None Remove="Content\blurredBankBackround.png" />
     <None Remove="Content\Fonts\instructionsFont.spritefont" />
@@ -33,6 +34,7 @@
   <ItemGroup>
     <Folder Include="Content\Backgrounds\" />
     <Folder Include="Content\Buttons\" />
+    <Folder Include="Content\Spritesheets\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

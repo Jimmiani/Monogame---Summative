@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/destructionAudio.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/destructionAudio.wav
+
 #begin Audio/hitman.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -31,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/bankBackground.png
 
+#begin Backgrounds/blackBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/blackBackground.png
+
 #begin Backgrounds/blurredBankBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -42,6 +60,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Backgrounds/blurredBankBackground.png
+
+#begin Backgrounds/insideBankBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/insideBankBackground.png
 
 #begin Backgrounds/menuBackground.png
 /importer:TextureImporter

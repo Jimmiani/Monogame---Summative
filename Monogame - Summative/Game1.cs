@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -13,9 +14,10 @@ namespace Monogame___Summative
 
         MouseState mouseState, prevMouseState;
         Color musicColour;
+        float enterSeconds;
 
         // Images
-        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture;
+        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture;
         Rectangle window, menuRect;
 
         // Buttons
@@ -26,8 +28,10 @@ namespace Monogame___Summative
         SpriteFont titleFont, howToPlayFont;
         string instructions;
 
-        // Songs
+        // Audio
         Song hitmanSong;
+        SoundEffect breakInSfx;
+        SoundEffectInstance soundInstance;
 
         // Spritesheet
         Texture2D stickmanSpritesheet, cropTexture;
@@ -35,12 +39,15 @@ namespace Monogame___Summative
         float stickSeconds;
         Vector2 stickSpeed;
         Rectangle stickRect;
+        int stickIndex;
 
         enum Screen
         {
             Intro,
             MenuScreen,
             InstructionsScreen,
+            CutsceneScreen,
+            CutsceneScreen2,
             MainScreen,
             EndScreen
         }
@@ -63,6 +70,7 @@ namespace Monogame___Summative
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
             musicColour = Color.White;
+            enterSeconds = 0f;
 
 
             instructions = "Welcome to Vault Raiders! You and your crew\n" +
@@ -91,8 +99,9 @@ namespace Monogame___Summative
             // Spritesheet
             stickmanTextures = new List<Texture2D>();
             stickSeconds = 0f;
-            stickSpeed = new Vector2(4, 0);
-            stickRect = new Rectangle(-480, 300, 480, 440);
+            stickSpeed = new Vector2(3, 0);
+            stickRect = new Rectangle(-180, 380, 180, 165);
+            stickIndex = 0;
 
             base.Initialize();
         }
@@ -105,6 +114,9 @@ namespace Monogame___Summative
             bankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/bankBackground");
             blurredBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blurredBankBackground");
             menuBackgroundTexture = Content.Load<Texture2D>("Backgrounds/menuBackground");
+            blackBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
+            insideBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/insideBankBackground");
+            
             
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -113,7 +125,11 @@ namespace Monogame___Summative
             musicBtnTexture = Content.Load<Texture2D>("Buttons/musicBtn");
             instructionsBtnTexture = Content.Load<Texture2D>("Buttons/instructionsBtn");
             backBtnTexture = Content.Load<Texture2D>("Buttons/backBtn");
-            
+
+            // Audio
+            breakInSfx = Content.Load<SoundEffect>("Audio/destructionAudio");
+            soundInstance = breakInSfx.CreateInstance();
+
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
             howToPlayFont = Content.Load<SpriteFont>("Fonts/howToPlayFont");
@@ -127,12 +143,12 @@ namespace Monogame___Summative
             Rectangle sourceRect;
 
 
-            int width = stickmanSpritesheet.Width / 8;
+            int width = stickmanSpritesheet.Width / 4;
             int height = stickmanSpritesheet.Height / 2;
 
             for (int y = 0; y < 2; y++)
             {
-                for (int x = 0; x < 8; x++)
+                for (int x = 0; x < 4; x++)
                 {
                     sourceRect = new Rectangle(x * width, y * height, width, height);
                     cropTexture = new Texture2D(GraphicsDevice, width, height);
@@ -155,7 +171,6 @@ namespace Monogame___Summative
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
-            stickSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (screen == Screen.Intro)
             {
                 // Play Button
@@ -167,7 +182,7 @@ namespace Monogame___Summative
                         playBtnRect = new Rectangle((window.Width - 280) / 2, 355, 280, 166);
                         if (mouseState.LeftButton == ButtonState.Released)
                         {
-                            screen = Screen.MainScreen;
+                            screen = Screen.CutsceneScreen;
                             playBtnRect = new Rectangle((window.Width - 300) / 2, 350, 300, 178);
                         }
                     }
@@ -326,17 +341,29 @@ namespace Monogame___Summative
                         backBtnRect = new Rectangle(120, 100, 80, 80);
                     }
                 }
-                else if (screen == Screen.MainScreen)
-                {
-                    // Stick Man
-                    stickRect.X += (int)stickSpeed.X;
-                    stickRect.X += (int)stickSpeed.X;
-                    stickSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
 
-                    if (stickSeconds >= 2f)
+            else if (screen == Screen.CutsceneScreen)
+            {
+                // Stick Man
+                stickRect.X += (int)stickSpeed.X;
+                stickRect.Y += (int)stickSpeed.Y;
+                stickSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (stickSeconds >= 0.09f)
+                {
+                    stickSeconds = 0f;
+                    stickIndex++;
+                    if (stickIndex >= stickmanTextures.Count)
                     {
-                        stickSeconds = 0f;
+                        stickIndex = 0;
                     }
+                }
+                if (stickRect.X >= 345)
+                {
+                    enterSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (soundInstance.State == SoundState.Stopped)
+                        screen = Screen.CutsceneScreen2;
                 }
             }
 
@@ -372,10 +399,14 @@ namespace Monogame___Summative
                 _spriteBatch.DrawString(titleFont, "How to Play", new Vector2(277, 160), Color.Black, 0, new Vector2(0, 0), (float)0.4, SpriteEffects.None, 0);
                 _spriteBatch.DrawString(howToPlayFont, instructions, new Vector2(190, 215), Color.Black, 0, new Vector2(0, 0), 1, SpriteEffects.None, 0);
             }
-            else if (screen == Screen.MainScreen)
+            else if (screen == Screen.CutsceneScreen)
             {
                 _spriteBatch.Draw(bankBackgroundTexture, new Vector2(0, 0), Color.White);
-                
+                _spriteBatch.Draw(stickmanTextures[stickIndex], stickRect, Color.White);
+                if (stickRect.X >= 345)
+                {
+                    _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
+                }
             }
 
             _spriteBatch.End();
