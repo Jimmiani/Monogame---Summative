@@ -17,8 +17,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\Audio\breakInAudio.mp3" />
+    <None Remove="Content\Audio\destructionAudio.wav" />
     <None Remove="Content\bankBackround.png" />
     <None Remove="Content\blurredBankBackround.png" />
+    <None Remove="Content\destructionAudio.wav" />
     <None Remove="Content\Fonts\instructionsFont.spritefont" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
