@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/bankAlarm.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/bankAlarm.wav
+
 #begin Audio/destructionAudio.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

@@ -14,6 +14,7 @@ namespace Monogame___Summative
 
         MouseState mouseState, prevMouseState;
         Color musicColour;
+        bool soundFinished;
 
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture;
@@ -29,8 +30,8 @@ namespace Monogame___Summative
 
         // Audio
         Song hitmanSong;
-        SoundEffect breakInSfx;
-        SoundEffectInstance soundInstance;
+        SoundEffect destructionSound, alarmSound;
+        SoundEffectInstance destructionInstance;
 
         // Spritesheet
         Texture2D stickmanSpritesheet, cropTexture;
@@ -69,6 +70,7 @@ namespace Monogame___Summative
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
             musicColour = Color.White;
+            soundFinished = false;
 
 
             instructions = "Welcome to Vault Raiders! You and your crew\n" +
@@ -125,8 +127,9 @@ namespace Monogame___Summative
             backBtnTexture = Content.Load<Texture2D>("Buttons/backBtn");
 
             // Audio
-            breakInSfx = Content.Load<SoundEffect>("Audio/destructionAudio");
-            soundInstance = breakInSfx.CreateInstance();
+            destructionSound = Content.Load<SoundEffect>("Audio/destructionAudio");
+            destructionInstance = destructionSound.CreateInstance();
+            alarmSound = Content.Load<SoundEffect>("bankAlarm");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
@@ -357,17 +360,18 @@ namespace Monogame___Summative
                         stickIndex = 0;
                     }
                 }
-                if (stickRect.X >= 345)
+                if (stickRect.X >= 345 && destructionInstance.State == SoundState.Stopped && !soundFinished)
                 {
-
-                    soundInstance.Play();
-                    if (soundInstance.State == SoundState.Stopped)
-                    {
-                        screen = Screen.CutsceneScreen2;
-                        stickSpeed = new Vector2(5, 0);
-                        stickRect = new Rectangle(-360, 200, 360, 330);
-                        stickSeconds = 0;
-                    }
+                    destructionInstance.Play();
+                    soundFinished = true;
+                }
+                if (destructionInstance.State == SoundState.Stopped && soundFinished)
+                {
+                    screen = Screen.CutsceneScreen2;
+                    stickSpeed = new Vector2(5, 0);
+                    stickRect = new Rectangle(-360, 200, 360, 330);
+                    stickSeconds = 0;
+                    alarmSound.Play();
                 }
             }
 
@@ -386,6 +390,10 @@ namespace Monogame___Summative
                     {
                         stickIndex = 0;
                     }
+                }
+                if (stickRect.X >= window.Width)
+                {
+                    screen = Screen.MainScreen;
                 }
             }
 
@@ -434,6 +442,10 @@ namespace Monogame___Summative
             {
                 _spriteBatch.Draw(insideBankBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(stickmanTextures[stickIndex], stickRect, Color.White);
+            }
+            else if (screen == Screen.MainScreen)
+            {
+                
             }
 
             _spriteBatch.End();
