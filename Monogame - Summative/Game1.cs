@@ -14,7 +14,6 @@ namespace Monogame___Summative
 
         MouseState mouseState, prevMouseState;
         Color musicColour;
-        float enterSeconds;
 
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture;
@@ -70,7 +69,6 @@ namespace Monogame___Summative
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
             musicColour = Color.White;
-            enterSeconds = 0f;
 
 
             instructions = "Welcome to Vault Raiders! You and your crew\n" +
@@ -80,8 +78,8 @@ namespace Monogame___Summative
                            "the cash before the cops show up and ruin your\n" +
                            "plans. But there's a catch. The clock is ticking,\n" +
                            "and if you're caught, you'll be in a prison\n" +
-                           " cell before you evenrealise. Do you have what\n" +
-                           "it takes to pull off the perfectheist, or will\n" +
+                           "cell before you even realize. Do you have what\n" +
+                           "it takes to pull off the perfect heist, or will\n" +
                            "you be behind bars before sunrise?";
 
 
@@ -361,9 +359,33 @@ namespace Monogame___Summative
                 }
                 if (stickRect.X >= 345)
                 {
-                    enterSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    soundInstance.Play();
                     if (soundInstance.State == SoundState.Stopped)
+                    {
                         screen = Screen.CutsceneScreen2;
+                        stickSpeed = new Vector2(5, 0);
+                        stickRect = new Rectangle(-360, 200, 360, 330);
+                        stickSeconds = 0;
+                    }
+                }
+            }
+
+            else if (screen == Screen.CutsceneScreen2)
+            {
+                // Stick Man
+                stickRect.X += (int)stickSpeed.X;
+                stickRect.Y += (int)stickSpeed.Y;
+                stickSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (stickSeconds >= 0.09f)
+                {
+                    stickSeconds = 0f;
+                    stickIndex++;
+                    if (stickIndex >= stickmanTextures.Count)
+                    {
+                        stickIndex = 0;
+                    }
                 }
             }
 
@@ -407,6 +429,11 @@ namespace Monogame___Summative
                 {
                     _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 }
+            }
+            else if (screen == Screen.CutsceneScreen2)
+            {
+                _spriteBatch.Draw(insideBankBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(stickmanTextures[stickIndex], stickRect, Color.White);
             }
 
             _spriteBatch.End();
