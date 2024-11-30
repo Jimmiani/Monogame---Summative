@@ -15,10 +15,11 @@ namespace Monogame___Summative
         MouseState mouseState, prevMouseState;
         Color musicColour;
         bool soundFinished;
+        float finalSeconds;
 
         // Images
-        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture;
-        Rectangle window, menuRect;
+        Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture, mainBankBackgroundTexture, codeLockTexture;
+        Rectangle window, menuRect, vaultRect, codeLockRect;
 
         // Buttons
         Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture, backBtnTexture;
@@ -71,6 +72,7 @@ namespace Monogame___Summative
             MediaPlayer.Play(hitmanSong);
             musicColour = Color.White;
             soundFinished = false;
+            finalSeconds = 0;
 
 
             instructions = "Welcome to Vault Raiders! You and your crew\n" +
@@ -95,6 +97,7 @@ namespace Monogame___Summative
 
             // Images
             menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
+            vaultRect = new Rectangle(217, 78, 367, 366);
 
             // Spritesheet
             stickmanTextures = new List<Texture2D>();
@@ -116,7 +119,7 @@ namespace Monogame___Summative
             menuBackgroundTexture = Content.Load<Texture2D>("Backgrounds/menuBackground");
             blackBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
             insideBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/insideBankBackground");
-            
+            mainBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/mainBankBackground");
             
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -129,7 +132,7 @@ namespace Monogame___Summative
             // Audio
             destructionSound = Content.Load<SoundEffect>("Audio/destructionAudio");
             destructionInstance = destructionSound.CreateInstance();
-            alarmSound = Content.Load<SoundEffect>("bankAlarm");
+            alarmSound = Content.Load<SoundEffect>("Audio/bankAlarm");
 
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
@@ -137,6 +140,7 @@ namespace Monogame___Summative
 
             // Images
             menuTexture = Content.Load<Texture2D>("Images/menuScreen");
+            codeLockTexture = Content.Load<Texture2D>("Images/codeLock");
 
             // Spritesheet
 
@@ -397,6 +401,11 @@ namespace Monogame___Summative
                 }
             }
 
+            else if (screen == Screen.MainScreen)
+            {
+                finalSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
             base.Update(gameTime);
         }
 
@@ -445,7 +454,7 @@ namespace Monogame___Summative
             }
             else if (screen == Screen.MainScreen)
             {
-                
+                _spriteBatch.Draw(mainBankBackgroundTexture, new Vector2(0, 0), Color.White);
             }
 
             _spriteBatch.End();

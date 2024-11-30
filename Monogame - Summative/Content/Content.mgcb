@@ -79,6 +79,18 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/insideBankBackground.png
 
+#begin Backgrounds/mainBankBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/mainBankBackground.png
+
 #begin Backgrounds/menuBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -239,6 +251,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/titleFont.spritefont
+
+#begin Images/codeLock.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/codeLock.png
 
 #begin Images/menuScreen.png
 /importer:TextureImporter
