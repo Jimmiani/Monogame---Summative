@@ -19,14 +19,15 @@ namespace Monogame___Summative
 
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture, mainBankBackgroundTexture, codeLockTexture;
-        Rectangle window, menuRect, vaultRect, codeLockRect;
+        Texture2D finalTimeBoxTexture, page1Texture, page2Texture, page3Texture, page3FlatTexture;
+        Rectangle window, menuRect, vaultRect, codeLockRect, finalTimeBoxRect, page1Rect, page2Rect, page3Rect;
 
         // Buttons
         Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture, backBtnTexture;
         Rectangle playBtnRect, settingsBtnRect, noBtnRect, musicBtnRect, instructionsBtnRect, backBtnRect;
 
         // Fonts
-        SpriteFont titleFont, howToPlayFont;
+        SpriteFont titleFont, howToPlayFont, timeFont;
         string instructions;
 
         // Audio
@@ -50,7 +51,12 @@ namespace Monogame___Summative
             CutsceneScreen,
             CutsceneScreen2,
             MainScreen,
-            EndScreen
+            Page1Screen,
+            Page2Screen,
+            Page3Screen,
+            VaultScreen,
+            EndScreen1,
+            EndScreen2
         }
         Screen screen;
         public Game1()
@@ -98,6 +104,12 @@ namespace Monogame___Summative
             // Images
             menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
             vaultRect = new Rectangle(217, 78, 367, 366);
+            codeLockRect = new Rectangle((window.Width - 300) / 2, (window.Height - 310) / 2, 300, 310);
+            finalTimeBoxRect = new Rectangle(20, 20, 200, 100);
+            page1Rect = new Rectangle(677, 64, 30, 26);
+            page2Rect = new Rectangle(644, 532, 30, 32);
+            page3Rect = new Rectangle(75, 438, 70, 57);
+            
 
             // Spritesheet
             stickmanTextures = new List<Texture2D>();
@@ -137,10 +149,16 @@ namespace Monogame___Summative
             // Fonts
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
             howToPlayFont = Content.Load<SpriteFont>("Fonts/howToPlayFont");
+            timeFont = Content.Load<SpriteFont>("Fonts/timeFont");
 
             // Images
             menuTexture = Content.Load<Texture2D>("Images/menuScreen");
             codeLockTexture = Content.Load<Texture2D>("Images/codeLock");
+            finalTimeBoxTexture = Content.Load<Texture2D>("Images/finalTimeBox");
+            page1Texture = Content.Load<Texture2D>("Images/page1");
+            page2Texture = Content.Load<Texture2D>("Images/page2");
+            page3Texture = Content.Load<Texture2D>("Images/page3");
+            page3FlatTexture = Content.Load<Texture2D>("Images/page3Flat");
 
             // Spritesheet
 
@@ -403,6 +421,65 @@ namespace Monogame___Summative
 
             else if (screen == Screen.MainScreen)
             {
+                // Page 1
+                if (page1Rect.Contains(mouseState.Position))
+                {
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        screen = Screen.Page1Screen;
+                    }
+                }
+                // Page 2
+                if (page2Rect.Contains(mouseState.Position))
+                {
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        screen = Screen.Page2Screen;
+                    }
+                }
+                // Page 3
+                if (page3Rect.Contains(mouseState.Position))
+                {
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        screen = Screen.Page3Screen;
+                    }
+                }
+                if (vaultRect.Contains(mouseState.Position))
+                {
+                    if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        screen = Screen.VaultScreen;
+                    }
+                }
+            }
+            if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen)
+            {
+                noBtnRect = new Rectangle(700, 20, 80, 80);
+                // No Button
+                if (noBtnRect.Contains(mouseState.Position))
+                {
+                    noBtnRect = new Rectangle(694, 14, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        noBtnRect = new Rectangle(706, 26, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.MainScreen;
+                            noBtnRect = new Rectangle(700, 20, 80, 80);
+                        }
+                    }
+                }
+                else if (!noBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        noBtnRect = new Rectangle(700, 20, 80, 80);
+                    }
+                }
+            }
+            if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen || screen == Screen.MainScreen)
+            {
                 finalSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
@@ -455,9 +532,47 @@ namespace Monogame___Summative
             else if (screen == Screen.MainScreen)
             {
                 _spriteBatch.Draw(mainBankBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(page1Texture, page1Rect, Color.White);
+                _spriteBatch.Draw(page2Texture, page2Rect, Color.White);
+                _spriteBatch.Draw(page3Texture, page3Rect, Color.White);
+            }
+            else if (screen == Screen.Page1Screen)
+            {
+                _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(page1Texture, new Vector2(100, 43), Color.White);
+                _spriteBatch.DrawString(howToPlayFont, "1)", new Vector2 (215, 168), Color.Black);
+                _spriteBatch.DrawString(titleFont, "8", new Vector2(365, 247), Color.Black);
+            }
+            else if (screen == Screen.Page2Screen)
+            {
+                _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(page2Texture, new Vector2(150, 35), Color.White);
+                _spriteBatch.DrawString(howToPlayFont, "2)", new Vector2(222, 200), Color.Black);
+                _spriteBatch.DrawString(titleFont, "7", new Vector2(350, 270), Color.Black);
+            }
+            else if (screen == Screen.Page3Screen)
+            {
+                _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(page3FlatTexture, new Vector2(206, 25), Color.White);
+                _spriteBatch.DrawString(howToPlayFont, "3)", new Vector2(289, 139), Color.Black);
+                _spriteBatch.DrawString(titleFont, "1", new Vector2(385, 236), Color.Black);
+            }
+            else if (screen == Screen.VaultScreen)
+            {
+                _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.Draw(codeLockTexture, codeLockRect, Color.White);
+            }
+            if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen)
+            {
+                _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
+            }
+            if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen || screen == Screen.MainScreen)
+            {
+                _spriteBatch.Draw(finalTimeBoxTexture, finalTimeBoxRect, Color.White);
+                _spriteBatch.DrawString(timeFont, (45 - finalSeconds).ToString("00.0"), new Vector2(50, 27), Color.Black);
             }
 
-            _spriteBatch.End();
+                _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
