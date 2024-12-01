@@ -13,13 +13,13 @@ namespace Monogame___Summative
         private SpriteBatch _spriteBatch;
 
         MouseState mouseState, prevMouseState;
-        Color musicColour;
+        Color musicColour, timerColour;
         bool soundFinished;
         float finalSeconds;
 
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture, mainBankBackgroundTexture, codeLockTexture;
-        Texture2D finalTimeBoxTexture, page1Texture, page2Texture, page3Texture, page3FlatTexture;
+        Texture2D finalTimeBoxTexture, page1Texture, page2Texture, page3Texture, page3FlatTexture, loseBackgroundTexture, winBackgroundTexture;
         Rectangle window, menuRect, vaultRect, codeLockRect, finalTimeBoxRect, page1Rect, page2Rect, page3Rect;
 
         // Buttons
@@ -55,8 +55,8 @@ namespace Monogame___Summative
             Page2Screen,
             Page3Screen,
             VaultScreen,
-            EndScreen1,
-            EndScreen2
+            LoseScreen,
+            WinScreen2
         }
         Screen screen;
         public Game1()
@@ -77,6 +77,7 @@ namespace Monogame___Summative
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
             musicColour = Color.White;
+            timerColour = Color.Black;
             soundFinished = false;
             finalSeconds = 0;
 
@@ -132,6 +133,8 @@ namespace Monogame___Summative
             blackBackgroundTexture = Content.Load<Texture2D>("Backgrounds/blackBackground");
             insideBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/insideBankBackground");
             mainBankBackgroundTexture = Content.Load<Texture2D>("Backgrounds/mainBankBackground");
+            loseBackgroundTexture = Content.Load<Texture2D>("Backgrounds/loseBackground");
+            winBackgroundTexture = Content.Load<Texture2D>("Backgrounds/winBackground");
             
             // Buttons
             playBtnTexture = Content.Load<Texture2D>("Buttons/playBtn");
@@ -481,6 +484,14 @@ namespace Monogame___Summative
             if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen || screen == Screen.MainScreen)
             {
                 finalSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (finalSeconds >= 45)
+                {
+                    screen = Screen.LoseScreen;
+                }
+                if (finalSeconds > 35)
+                {
+                    timerColour = Color.Red;
+                }
             }
 
             base.Update(gameTime);
@@ -562,6 +573,12 @@ namespace Monogame___Summative
                 _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(codeLockTexture, codeLockRect, Color.White);
             }
+            else if (screen == Screen.LoseScreen)
+            {
+                _spriteBatch.Draw(loseBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(titleFont, "ARRESTED!", new Vector2(95, 18), Color.DarkRed, 0, new Vector2(0, 0), (float)1.25, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "You Lost!", new Vector2(160, 495), Color.Black);
+            }
             if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen)
             {
                 _spriteBatch.Draw(noBtnTexture, noBtnRect, Color.White);
@@ -569,9 +586,8 @@ namespace Monogame___Summative
             if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen || screen == Screen.MainScreen)
             {
                 _spriteBatch.Draw(finalTimeBoxTexture, finalTimeBoxRect, Color.White);
-                _spriteBatch.DrawString(timeFont, (45 - finalSeconds).ToString("00.0"), new Vector2(50, 27), Color.Black);
+                _spriteBatch.DrawString(timeFont, (45 - finalSeconds).ToString("00.0"), new Vector2(50, 27), timerColour);
             }
-
                 _spriteBatch.End();
             base.Draw(gameTime);
         }

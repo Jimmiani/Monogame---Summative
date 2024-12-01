@@ -79,6 +79,18 @@
 /processorParam:TextureFormat=Color
 /build:Backgrounds/insideBankBackground.png
 
+#begin Backgrounds/loseBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/loseBackground.png
+
 #begin Backgrounds/mainBankBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -102,6 +114,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Backgrounds/menuBackground.png
+
+#begin Backgrounds/winBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Backgrounds/winBackground.png
 
 #begin Buttons/backBtn.png
 /importer:TextureImporter
