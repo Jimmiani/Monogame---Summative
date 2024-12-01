@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System;
 using System.Collections.Generic;
 
 namespace Monogame___Summative
@@ -16,6 +17,8 @@ namespace Monogame___Summative
         Color musicColour, timerColour;
         bool soundFinished;
         float finalSeconds;
+        Random generator;
+        int page1Num, page2Num, page3Num;
 
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture, mainBankBackgroundTexture, codeLockTexture;
@@ -23,8 +26,8 @@ namespace Monogame___Summative
         Rectangle window, menuRect, vaultRect, codeLockRect, finalTimeBoxRect, page1Rect, page2Rect, page3Rect;
 
         // Buttons
-        Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture, backBtnTexture;
-        Rectangle playBtnRect, settingsBtnRect, noBtnRect, musicBtnRect, instructionsBtnRect, backBtnRect;
+        Texture2D playBtnTexture, settingsBtnTexture, noBtnTexture, musicBtnTexture, instructionsBtnTexture, backBtnTexture, homeBtnTexture;
+        Rectangle playBtnRect, settingsBtnRect, noBtnRect, musicBtnRect, instructionsBtnRect, backBtnRect, homeBtnRect;
 
         // Fonts
         SpriteFont titleFont, howToPlayFont, timeFont;
@@ -56,7 +59,7 @@ namespace Monogame___Summative
             Page3Screen,
             VaultScreen,
             LoseScreen,
-            WinScreen2
+            WinScreen
         }
         Screen screen;
         public Game1()
@@ -76,6 +79,10 @@ namespace Monogame___Summative
 
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
+            generator = new Random();
+            page1Num = generator.Next(10);
+            page2Num = generator.Next(10);
+            page3Num = generator.Next(10);
             musicColour = Color.White;
             timerColour = Color.Black;
             soundFinished = false;
@@ -101,14 +108,15 @@ namespace Monogame___Summative
             noBtnRect = new Rectangle(590, 100, 80, 80);
             instructionsBtnRect = new Rectangle(450, 240, 110, 110);
             backBtnRect = new Rectangle(120, 100, 80, 80);
+            homeBtnRect = new Rectangle(700, 500, 80, 80);
 
             // Images
             menuRect = new Rectangle((window.Width - 500) / 2, (window.Height - 350) / 2, 500, 350);
             vaultRect = new Rectangle(217, 78, 367, 366);
             codeLockRect = new Rectangle((window.Width - 300) / 2, (window.Height - 310) / 2, 300, 310);
             finalTimeBoxRect = new Rectangle(20, 20, 200, 100);
-            page1Rect = new Rectangle(677, 64, 30, 26);
-            page2Rect = new Rectangle(644, 532, 30, 32);
+            page1Rect = new Rectangle(587, 34, 90, 78);
+            page2Rect = new Rectangle(644, 532, 60, 64);
             page3Rect = new Rectangle(75, 438, 70, 57);
             
 
@@ -143,6 +151,7 @@ namespace Monogame___Summative
             musicBtnTexture = Content.Load<Texture2D>("Buttons/musicBtn");
             instructionsBtnTexture = Content.Load<Texture2D>("Buttons/instructionsBtn");
             backBtnTexture = Content.Load<Texture2D>("Buttons/backBtn");
+            homeBtnTexture = Content.Load<Texture2D>("Buttons/homeBtn");
 
             // Audio
             destructionSound = Content.Load<SoundEffect>("Audio/destructionAudio");
@@ -385,7 +394,7 @@ namespace Monogame___Summative
                         stickIndex = 0;
                     }
                 }
-                if (stickRect.X >= 345 && destructionInstance.State == SoundState.Stopped && !soundFinished)
+                if (stickRect.X >= 325 && destructionInstance.State == SoundState.Stopped && !soundFinished)
                 {
                     destructionInstance.Play();
                     soundFinished = true;
@@ -493,8 +502,41 @@ namespace Monogame___Summative
                     timerColour = Color.Red;
                 }
             }
-
-            base.Update(gameTime);
+            if (screen == Screen.LoseScreen || screen == Screen.WinScreen)
+            {
+                // Home Button
+                if (homeBtnRect.Contains(mouseState.Position))
+                {
+                    homeBtnRect = new Rectangle(694, 494, 92, 92);
+                    if (prevMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        homeBtnRect = new Rectangle(706, 506, 68, 68);
+                        if (mouseState.LeftButton == ButtonState.Released)
+                        {
+                            screen = Screen.Intro;
+                            homeBtnRect = new Rectangle(700, 500, 80, 80);
+                            finalSeconds = 0;
+                            soundFinished = false;
+                            timerColour = Color.Black;
+                            stickRect = new Rectangle(-180, 380, 180, 165);
+                            stickSpeed = new Vector2(3, 0);
+                            stickSeconds = 0;
+                            stickIndex = 0;
+                            page1Num = generator.Next(10);
+                            page2Num = generator.Next(10);
+                            page3Num = generator.Next(10);
+                        }
+                    }
+                }
+                else if (!noBtnRect.Contains(mouseState.Position))
+                {
+                    if (prevMouseState.LeftButton == ButtonState.Released)
+                    {
+                        homeBtnRect = new Rectangle(700, 500, 80, 80);
+                    }
+                }
+            }
+                base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -530,7 +572,7 @@ namespace Monogame___Summative
             {
                 _spriteBatch.Draw(bankBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(stickmanTextures[stickIndex], stickRect, Color.White);
-                if (stickRect.X >= 345)
+                if (stickRect.X >= 325)
                 {
                     _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 }
@@ -552,21 +594,21 @@ namespace Monogame___Summative
                 _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(page1Texture, new Vector2(100, 43), Color.White);
                 _spriteBatch.DrawString(howToPlayFont, "1)", new Vector2 (215, 168), Color.Black);
-                _spriteBatch.DrawString(titleFont, "8", new Vector2(365, 247), Color.Black);
+                _spriteBatch.DrawString(titleFont, page1Num.ToString(), new Vector2(365, 247), Color.Black);
             }
             else if (screen == Screen.Page2Screen)
             {
                 _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(page2Texture, new Vector2(150, 35), Color.White);
                 _spriteBatch.DrawString(howToPlayFont, "2)", new Vector2(222, 200), Color.Black);
-                _spriteBatch.DrawString(titleFont, "7", new Vector2(350, 270), Color.Black);
+                _spriteBatch.DrawString(titleFont, page2Num.ToString(), new Vector2(350, 270), Color.Black);
             }
             else if (screen == Screen.Page3Screen)
             {
                 _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(page3FlatTexture, new Vector2(206, 25), Color.White);
                 _spriteBatch.DrawString(howToPlayFont, "3)", new Vector2(289, 139), Color.Black);
-                _spriteBatch.DrawString(titleFont, "1", new Vector2(385, 236), Color.Black);
+                _spriteBatch.DrawString(titleFont, page3Num.ToString(), new Vector2(385, 236), Color.Black);
             }
             else if (screen == Screen.VaultScreen)
             {
@@ -576,8 +618,14 @@ namespace Monogame___Summative
             else if (screen == Screen.LoseScreen)
             {
                 _spriteBatch.Draw(loseBackgroundTexture, new Vector2(0, 0), Color.White);
-                _spriteBatch.DrawString(titleFont, "ARRESTED!", new Vector2(95, 18), Color.DarkRed, 0, new Vector2(0, 0), (float)1.25, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "ARRESTED!", new Vector2(95, 18), Color.Red, 0, new Vector2(0, 0), (float)1.25, SpriteEffects.None, 0);
                 _spriteBatch.DrawString(titleFont, "You Lost!", new Vector2(160, 495), Color.Black);
+            }
+            else if (screen == Screen.WinScreen)
+            {
+                _spriteBatch.Draw(winBackgroundTexture, new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(titleFont, "ESCAPED!", new Vector2(128, 18), Color.LimeGreen, 0, new Vector2(0, 0), (float)1.25, SpriteEffects.None, 0);
+                _spriteBatch.DrawString(titleFont, "You Win!", new Vector2(197, 495), Color.Black);
             }
             if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen)
             {
@@ -587,6 +635,10 @@ namespace Monogame___Summative
             {
                 _spriteBatch.Draw(finalTimeBoxTexture, finalTimeBoxRect, Color.White);
                 _spriteBatch.DrawString(timeFont, (45 - finalSeconds).ToString("00.0"), new Vector2(50, 27), timerColour);
+            }
+            if (screen == Screen.LoseScreen || screen == Screen.WinScreen)
+            {
+                _spriteBatch.Draw(homeBtnTexture, homeBtnRect, Color.White);
             }
                 _spriteBatch.End();
             base.Draw(gameTime);
