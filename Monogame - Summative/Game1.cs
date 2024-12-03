@@ -14,12 +14,13 @@ namespace Monogame___Summative
         private SpriteBatch _spriteBatch;
 
         MouseState mouseState, prevMouseState;
+        KeyboardState keyboardState;
         Color musicColour, timerColour;
         bool soundFinished;
         float finalSeconds;
         Random generator;
         int page1Num, page2Num, page3Num;
-
+        string comboCode;
         // Images
         Texture2D bankBackgroundTexture, blurredBankBackgroundTexture, menuTexture, menuBackgroundTexture, blackBackgroundTexture, insideBankBackgroundTexture, mainBankBackgroundTexture, codeLockTexture;
         Texture2D finalTimeBoxTexture, page1Texture, page2Texture, page3Texture, page3FlatTexture, loseBackgroundTexture, winBackgroundTexture;
@@ -30,7 +31,7 @@ namespace Monogame___Summative
         Rectangle playBtnRect, settingsBtnRect, noBtnRect, musicBtnRect, instructionsBtnRect, backBtnRect, homeBtnRect;
 
         // Fonts
-        SpriteFont titleFont, howToPlayFont, timeFont;
+        SpriteFont titleFont, howToPlayFont, timeFont, vaultFont;
         string instructions;
 
         // Audio
@@ -87,6 +88,7 @@ namespace Monogame___Summative
             timerColour = Color.Black;
             soundFinished = false;
             finalSeconds = 0;
+            comboCode = "";
 
 
             instructions = "Welcome to Vault Raiders! You and your crew\n" +
@@ -162,6 +164,7 @@ namespace Monogame___Summative
             titleFont = Content.Load<SpriteFont>("Fonts/titleFont");
             howToPlayFont = Content.Load<SpriteFont>("Fonts/howToPlayFont");
             timeFont = Content.Load<SpriteFont>("Fonts/timeFont");
+            vaultFont = Content.Load<SpriteFont>("Fonts/vaultFont");
 
             // Images
             menuTexture = Content.Load<Texture2D>("Images/menuScreen");
@@ -204,8 +207,13 @@ namespace Monogame___Summative
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             prevMouseState = mouseState;
+            keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
+            if (MediaPlayer.State == MediaState.Stopped)
+            {
+                MediaPlayer.Play(hitmanSong);
+            }
             if (screen == Screen.Intro)
             {
                 // Play Button
@@ -278,6 +286,7 @@ namespace Monogame___Summative
                 }
 
                 // Music Button
+                
                 if (musicBtnRect.Contains(mouseState.Position))
                 {
                     musicBtnRect = new Rectangle(234, 236, 122, 122);
@@ -465,6 +474,22 @@ namespace Monogame___Summative
                     }
                 }
             }
+            else if (screen == Screen.VaultScreen)
+            {
+                if (comboCode.Length == 0 && keyboardState.IsKeyDown(Keys.D8))
+                {
+                    comboCode += "8";
+                }
+                if (comboCode.Length == 1 && keyboardState.IsKeyDown(Keys.D2))
+                {
+                    comboCode += "2";
+                }
+                if (comboCode.Length == 2 && keyboardState.IsKeyDown(Keys.D7))
+                {
+                    comboCode += "7";
+                }
+
+            }
             if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen)
             {
                 noBtnRect = new Rectangle(700, 20, 80, 80);
@@ -614,6 +639,7 @@ namespace Monogame___Summative
             {
                 _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(codeLockTexture, codeLockRect, Color.White);
+                _spriteBatch.DrawString(timeFont, comboCode, new Vector2(300, 200), Color.White);
             }
             else if (screen == Screen.LoseScreen)
             {

@@ -286,6 +286,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/titleFont.spritefont
 
+#begin Fonts/vaultFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/vaultFont.spritefont
+
 #begin Images/codeLock.png
 /importer:TextureImporter
 /processor:TextureProcessor
