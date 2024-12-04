@@ -81,9 +81,9 @@ namespace Monogame___Summative
             hitmanSong = Content.Load<Song>("Audio/hitman");
             MediaPlayer.Play(hitmanSong);
             generator = new Random();
-            page1Num = generator.Next(10);
-            page2Num = generator.Next(10);
-            page3Num = generator.Next(10);
+            page1Num = 8;
+            page2Num = 2;
+            page3Num = 7;
             musicColour = Color.White;
             timerColour = Color.Black;
             soundFinished = false;
@@ -478,17 +478,20 @@ namespace Monogame___Summative
             {
                 if (comboCode.Length == 0 && keyboardState.IsKeyDown(Keys.D8))
                 {
-                    comboCode += "8";
+                    comboCode += "8     ";
                 }
-                if (comboCode.Length == 1 && keyboardState.IsKeyDown(Keys.D2))
+                if (comboCode.Length == 6 && keyboardState.IsKeyDown(Keys.D2))
                 {
-                    comboCode += "2";
+                    comboCode += "2     ";
                 }
-                if (comboCode.Length == 2 && keyboardState.IsKeyDown(Keys.D7))
+                if (comboCode.Length == 12 && keyboardState.IsKeyDown(Keys.D7))
                 {
                     comboCode += "7";
                 }
-
+                if (comboCode.Length == 13 && keyboardState.IsKeyDown(Keys.Enter))
+                {
+                    screen = Screen.WinScreen;
+                }
             }
             if (screen == Screen.Page1Screen || screen == Screen.Page2Screen || screen == Screen.Page3Screen || screen == Screen.VaultScreen)
             {
@@ -639,7 +642,7 @@ namespace Monogame___Summative
             {
                 _spriteBatch.Draw(blackBackgroundTexture, new Vector2(0, 0), Color.White);
                 _spriteBatch.Draw(codeLockTexture, codeLockRect, Color.White);
-                _spriteBatch.DrawString(timeFont, comboCode, new Vector2(300, 200), Color.White);
+                _spriteBatch.DrawString(vaultFont, comboCode, new Vector2(295, 380), Color.Black);
             }
             else if (screen == Screen.LoseScreen)
             {
